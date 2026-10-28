@@ -11,28 +11,25 @@
 <style>
   :root {
     --bg: #0a0a0a;
-    --panel: #101010;
-    --line: #1d1d1d;
-    --text: #f2f2f2;
+    --text: #eeeeee;
     --dim: #6b6b6b;
     --lime: #c8f31d;
-    --slate: #56658a;
     --display: "Bebas Neue", "Oswald", Impact, "Arial Narrow", sans-serif;
     --mono: "Space Mono", ui-monospace, Menlo, Consolas, monospace;
   }
   *, *::before, *::after { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body { margin: 0; background: var(--bg); color: var(--text); font: 400 1rem/1.5 var(--mono); -webkit-font-smoothing: antialiased; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 400 .85rem/1.6 var(--mono); -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
   :focus-visible { outline: 2px solid var(--lime); outline-offset: 3px; }
-  .page { max-width: 1800px; margin: 0 auto; padding: 0 1rem; }
+  .page { max-width: 1800px; margin: 0 auto; padding: 0 1.25rem; }
 
   /* Top bar */
   .bar {
     position: sticky; top: 0; z-index: 10;
     display: flex; justify-content: space-between; align-items: stretch;
-    height: 3.5rem; padding: 0 1rem;
+    height: 4rem; padding: 0 1.25rem;
     background: rgba(10,10,10,.92); backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--line);
   }
   .brand { align-self: center; font: 400 1.4rem/1 var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--lime); text-decoration: none; }
   .tabs { position: relative; display: flex; gap: 1.75rem; }
@@ -41,67 +38,51 @@
     font: 400 .72rem var(--mono); letter-spacing: .14em; text-transform: uppercase;
     color: var(--dim); transition: color .2s;
   }
-  .tab:hover { color: var(--text); }
-  .tab[aria-selected="true"] { color: var(--lime); }
+  .tab:hover, .tab[aria-selected="true"] { color: var(--text); }
   .playhead {
-    position: absolute; bottom: -1px; left: 0; width: 0; height: 2px; background: var(--lime);
+    position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: var(--lime);
     transition: transform .3s cubic-bezier(.4,0,.2,1), width .3s cubic-bezier(.4,0,.2,1);
   }
 
-  /* Section headings */
-  .head { display: flex; align-items: baseline; gap: 1rem; padding: clamp(2.5rem, 6vw, 4rem) 0 1.25rem; margin-bottom: 2rem; border-bottom: 1px solid var(--line); }
-  .head h2 { margin: 0; font: 400 clamp(2.5rem, 5vw, 3.5rem)/1 var(--display); letter-spacing: .01em; text-transform: uppercase; }
-  .count { font: 400 .7rem var(--mono); letter-spacing: .12em; color: var(--slate); }
+  .panel { padding-top: clamp(1.5rem, 4vw, 3rem); }
   .panel[hidden] { display: none; }
 
   /* Videos */
-  .video h3 { display: flex; align-items: baseline; gap: .9rem; margin: 0 0 .6rem; font: 400 1.6rem/1.1 var(--display); letter-spacing: .04em; text-transform: uppercase; }
-  .video h3 small { font: 400 .68rem var(--mono); letter-spacing: .14em; color: var(--lime); }
+  .video h3 { display: flex; align-items: baseline; gap: .9rem; margin: 0 0 .7rem; font: 400 1.5rem/1.1 var(--display); letter-spacing: .06em; text-transform: uppercase; }
+  .video h3 small { font: 400 .68rem var(--mono); letter-spacing: .12em; color: var(--dim); }
   .frame { aspect-ratio: 16 / 9; width: 100%; background: #000; }
   .frame iframe, .frame video { display: block; width: 100%; height: 100%; border: 0; }
-  .video.featured { margin-bottom: clamp(2rem, 5vw, 3.5rem); }
+  .video.featured { margin-bottom: clamp(3rem, 7vw, 5rem); }
   .video.featured h3 { font-size: clamp(2rem, 4vw, 2.6rem); }
-  .more { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(1.5rem, 3vw, 2rem); }
+  .more { display: grid; grid-template-columns: repeat(2, 1fr); gap: clamp(2rem, 4vw, 3rem); }
 
   /* Thumbnail mosaic */
   .mosaic { display: grid; grid-template-columns: repeat(12, 1fr); gap: 3px; margin: 0; padding: 0; list-style: none; }
-  .mosaic li { position: relative; grid-column: span 4; aspect-ratio: 16 / 9; background: #000; overflow: hidden; }
+  .mosaic li { grid-column: span 4; aspect-ratio: 16 / 9; background: #000; overflow: hidden; }
   .mosaic li:nth-child(1) { grid-column: span 7; }
   .mosaic li:nth-child(2) { grid-column: span 5; aspect-ratio: auto; }
-  .mosaic button { position: absolute; inset: 0; width: 100%; height: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
-  .mosaic img { display: block; width: 100%; height: 100%; object-fit: cover; }
-  .mosaic button::after {
-    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .2s;
-    background: linear-gradient(to top, rgba(0,0,0,.55), transparent 35%);
-  }
-  .tag {
-    position: absolute; left: 1.25rem; bottom: 1rem; z-index: 1; opacity: 0; transition: opacity .2s; pointer-events: none;
-    font: 400 1.15rem/1 var(--display); letter-spacing: .06em; text-transform: uppercase; color: #f3e2c4;
-  }
-  .mosaic li:hover button::after, .mosaic button:focus-visible::after,
-  .mosaic li:hover .tag, .mosaic button:focus-visible .tag { opacity: 1; }
+  .mosaic button { display: block; position: relative; width: 100%; height: 100%; padding: 0; border: 0; background: none; cursor: zoom-in; }
+  .mosaic img { display: block; width: 100%; height: 100%; object-fit: cover; transition: opacity .2s; }
+  .mosaic button:hover img { opacity: .82; }
 
   dialog.lightbox { padding: 0; border: 0; background: transparent; max-width: min(96vw, 1400px); width: 100%; overflow: visible; }
   dialog.lightbox::backdrop { background: rgba(0,0,0,.94); }
   dialog.lightbox img { display: block; width: 100%; height: auto; max-height: 88vh; object-fit: contain; }
   dialog.lightbox form { margin: 0; text-align: right; }
-  dialog.lightbox button { margin-bottom: .5rem; padding: .45rem 1rem; cursor: pointer; background: none; color: var(--lime); border: 1px solid var(--lime); font: 400 .7rem var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+  dialog.lightbox button { margin-bottom: .5rem; padding: .35rem 0; cursor: pointer; background: none; color: var(--dim); border: 0; font: 400 .7rem var(--mono); letter-spacing: .14em; text-transform: uppercase; }
+  dialog.lightbox button:hover { color: var(--text); }
 
   /* Programs */
-  .programs { margin-bottom: clamp(3rem, 7vw, 5rem); }
-  .programs ul { display: flex; flex-wrap: wrap; gap: 3px; margin: 0; padding: 0; list-style: none; }
-  .programs li {
-    display: flex; align-items: center; gap: .9rem; padding: .6rem 1.25rem .6rem .6rem;
-    background: var(--panel); border: 1px solid var(--line);
-    font: 400 .75rem var(--mono); letter-spacing: .1em; text-transform: uppercase;
-  }
-  .programs li span { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border: 1px solid var(--c); color: var(--c); font: 400 1.2rem/1 var(--display); letter-spacing: .04em; text-transform: none; }
+  .programs { margin-top: clamp(4rem, 9vw, 7rem); }
+  .programs h2 { margin: 0 0 .6rem; font: 400 .7rem var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+  .programs ul { display: flex; flex-wrap: wrap; gap: .4rem 1.75rem; margin: 0; padding: 0; list-style: none; }
 
   /* Footer */
-  footer { margin-top: 2rem; border-top: 1px solid var(--line); background: #0d0d0d; }
-  footer .page { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; padding: 1.25rem 1rem; }
-  footer .l { font: 400 1rem var(--display); letter-spacing: .16em; text-transform: uppercase; color: #4a4a4a; }
-  footer .r { font: 400 .68rem var(--mono); letter-spacing: .08em; color: #555; }
+  footer { margin-top: clamp(3rem, 7vw, 5rem); padding: 0 0 2.5rem; }
+  footer .page { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+  footer a { text-decoration: none; border-bottom: 1px solid var(--dim); padding-bottom: 2px; transition: color .2s, border-color .2s; }
+  footer a:hover { color: var(--lime); border-color: var(--lime); }
+  footer .r { color: var(--dim); font-size: .7rem; letter-spacing: .08em; }
 
   @media (max-width: 760px) {
     .more { grid-template-columns: 1fr; }
@@ -110,10 +91,9 @@
     .tabs { gap: 1.1rem; }
     .brand { font-size: 1.2rem; }
   }
-  @media (hover: none) { .tag, .mosaic button::after { display: none; } }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .playhead, .tab, .tag, .mosaic button::after { transition: none; }
+    .playhead, .tab, .mosaic img, footer a { transition: none; }
   }
 </style>
 </head>
@@ -132,8 +112,6 @@
 
   <!-- VIDEOS -->
   <section class="panel" id="panel-videos" role="tabpanel" aria-labelledby="tab-videos">
-    <div class="head"><h2>Selected Work</h2><span class="count">03 Videos</span></div>
-
     <article class="video featured">
       <h3>Video Essay <small>Sneak peek</small></h3>
       <div class="frame">
@@ -161,32 +139,31 @@
 
   <!-- THUMBNAILS -->
   <section class="panel" id="panel-thumbnails" role="tabpanel" aria-labelledby="tab-thumbnails" hidden>
-    <div class="head"><h2>Selected Work</h2><span class="count" id="thumb-count">05 Thumbnails</span></div>
     <ul class="mosaic">
-      <li><button type="button" data-full="assets/thumb-1.jpg"><img src="assets/thumb-1.jpg" alt="Thumbnail: Day 1 versus Day 7 comparison with a horned creature in a flat cap"><span class="tag">Sample 1</span></button></li>
-      <li><button type="button" data-full="assets/thumb-2.jpg"><img src="assets/thumb-2.jpg" alt="Thumbnail: wanted poster on a pinboard with an FBI seal, a map and a McDonald's logo" loading="lazy"><span class="tag">Sample 2</span></button></li>
-      <li><button type="button" data-full="assets/thumb-3.jpg"><img src="assets/thumb-3.jpg" alt="Thumbnail: snow-covered cabin at night glowing red from inside" loading="lazy"><span class="tag">Sample 3</span></button></li>
-      <li><button type="button" data-full="assets/thumb-4.jpg"><img src="assets/thumb-4.jpg" alt="Thumbnail: gaming thumbnail with a red downward arrow and an inked ape character" loading="lazy"><span class="tag">Sample 4</span></button></li>
-      <li><button type="button" data-full="assets/thumb-5.jpg"><img src="assets/thumb-5.jpg" alt="Thumbnail: man in a dark forest with the word AFRAID in red" loading="lazy"><span class="tag">Sample 5</span></button></li>
+      <li><button type="button" data-full="assets/thumb-1.jpg"><img src="assets/thumb-1.jpg" alt="Thumbnail: Day 1 versus Day 7 comparison with a horned creature in a flat cap"></button></li>
+      <li><button type="button" data-full="assets/thumb-2.jpg"><img src="assets/thumb-2.jpg" alt="Thumbnail: wanted poster on a pinboard with an FBI seal, a map and a McDonald's logo" loading="lazy"></button></li>
+      <li><button type="button" data-full="assets/thumb-3.jpg"><img src="assets/thumb-3.jpg" alt="Thumbnail: snow-covered cabin at night glowing red from inside" loading="lazy"></button></li>
+      <li><button type="button" data-full="assets/thumb-4.jpg"><img src="assets/thumb-4.jpg" alt="Thumbnail: gaming thumbnail with a red downward arrow and an inked ape character" loading="lazy"></button></li>
+      <li><button type="button" data-full="assets/thumb-5.jpg"><img src="assets/thumb-5.jpg" alt="Thumbnail: man in a dark forest with the word AFRAID in red" loading="lazy"></button></li>
     </ul>
   </section>
 
   <!-- PROGRAMS -->
   <section class="programs" aria-labelledby="programs-title">
-    <div class="head"><h2 id="programs-title">Programs Used</h2><span class="count">04 Tools</span></div>
+    <h2 id="programs-title">Programs used</h2>
     <ul>
-      <li style="--c:#31a8ff"><span aria-hidden="true">Ps</span>Photoshop</li>
-      <li style="--c:#9999ff"><span aria-hidden="true">Pr</span>Premiere Pro</li>
-      <li style="--c:#d291ff"><span aria-hidden="true">Ae</span>After Effects</li>
-      <li style="--c:#ff8a1f"><span aria-hidden="true">Bl</span>Blender</li>
+      <li>Photoshop</li>
+      <li>Premiere Pro</li>
+      <li>After Effects</li>
+      <li>Blender</li>
     </ul>
   </section>
 </main>
 
 <footer>
   <div class="page">
-    <span class="l">Guy Horn Portfolio</span>
-    <span class="r">&copy; <span id="year">2026</span> &middot; Video Editor &amp; Thumbnail Designer</span>
+    <a href="mailto:guyhornbiz@gmail.com">guyhornbiz@gmail.com</a>
+    <span class="r">&copy; <span id="year">2026</span> Guy Horn</span>
   </div>
 </footer>
 
@@ -229,10 +206,6 @@
   select(location.hash === '#thumbnails' ? 'thumbnails' : 'videos');
   window.addEventListener('resize', movePlayhead);
   if (document.fonts) document.fonts.ready.then(movePlayhead);
-
-  // Thumbnail count updates itself if you add or remove thumbnails
-  const n = document.querySelectorAll('.mosaic li').length;
-  document.getElementById('thumb-count').textContent = String(n).padStart(2, '0') + ' Thumbnails';
 
   // Lightbox
   const box = document.getElementById('lightbox');
